@@ -2,7 +2,7 @@
 # Olivier Georgeon, 2021.
 # This code is used to teach Developmental AI.
 # from turtlesim_enacter import TurtleSimEnacter # requires ROS
-#from turtlepy_enacter import TurtlePyEnacter
+from turtlepy_enacter import TurtlePyEnacter
 #from Agent5 import Agent5
 #from OsoyooCarEnacter import OsoyooCarEnacter
 ROBOT_IP = "192.168.4.1"
@@ -91,6 +91,7 @@ class Agent2:
 
         """ Computing the next action to enact """
         # TODO: Implement the agent's decision mechanism
+        self.counter += 1
         value = 0
         if(self.lastAction is not None):
             value = self.valence_table[self.lastAction][outcome]
@@ -104,12 +105,65 @@ class Agent2:
             self.counter = 0
         # TODO: Implement the agent's anticipation mechanism
         self.anticipated_outcome = 0
-        if(self.obtainedOutcomes.get(self._action) is None and self.lastAction is not None):
+        if(self.obtainedOutcomes.get(self.lastAction) is None and self.lastAction is not None):
             self.obtainedOutcomes[self.lastAction] = outcome
 
         if(self.obtainedOutcomes.get(self._action) is not None):
             self.anticipated_outcome = self.obtainedOutcomes[self._action]
+        if(self._action != self.lastAction):
+            self.counter = 0
+        self.lastAction = self._action
+        return self._action
+
+    def chosePosAction(self):
+        for key in self.obtainedOutcomes.keys():
+            value = self.valence_table[key][self.obtainedOutcomes[key]]
+            print(str(value) + ' ' + str(key))
+            if(value > 0):
+                if(key != self.lastAction):
+                    return key
+        return None
+
+class Agent3:
+    def __init__(self, valence_table):
+        """ Creating our agent """
+        self.valence_table = valence_table
+        self._action = None
+        self.anticipated_outcome = None
+        self.counter = 0
+        self.lastAction = None
+        self.obtainedOutcomes = {}
+
+    def action(self, outcome):
+        """ tracing the previous cycle """
+        if self._action is not None:
+            print("Action: " + str(self._action) +
+                  ", Anticipation: " + str(self.anticipated_outcome) +
+                  ", Outcome: " + str(outcome) +
+                  ", Satisfaction: (anticipation: " + str(self.anticipated_outcome == outcome) +
+                  ", valence: " + str(self.valence_table[self._action][outcome]) + ")")
+
+        """ Computing the next action to enact """
+        # TODO: Implement the agent's decision mechanism
         self.counter += 1
+        value = None
+        if(self.lastAction is not None):
+            value = self.valence_table[self.lastAction][outcome]
+        if(self._action is None):
+            self._action = 0
+
+        if(value is not None and value < 0):
+            self._action = self.chosePosAction() if self.chosePosAction() is not None else self.lastAction
+        if(self.counter > 3):
+            self._action = (self._action +1) %3
+            self.counter = 0
+        # TODO: Implement the agent's anticipation mechanism
+        self.anticipated_outcome = 0
+        if(self.obtainedOutcomes.get(self.lastAction) is None and self.lastAction is not None):
+            self.obtainedOutcomes[self.lastAction] = outcome
+
+        if(self.obtainedOutcomes.get(self._action) is not None):
+            self.anticipated_outcome = self.obtainedOutcomes[self._action]
         if(self._action != self.lastAction):
             self.counter = 0
         self.lastAction = self._action
@@ -156,24 +210,26 @@ class Environment3:
 
 
 # TODO Define the valance of interactions (action, outcome)
-valences = [[-1, 1], [-1, 1]]
-# valences = [[1, -1], [1, -1]]
+#valences = [[-1, 1], [-1, 1]]
+#valences = [[1, -1], [1, -1]]
+valences = [[1, -1], [1, -1], [1, -1]]
 # TODO Choose an agent
 #a = Agent(valences)
 #a = Agent1(valences)
-a = Agent2(valences)
+#a = Agent2(valences)
+a = Agent3(valences)
 # a = Agent5(valences)
 # TODO Choose an environment
-e = Environment1()
+#e = Environment1()
 #e = Environment2()
 # e = Environment3()
 # e = TurtleSimEnacter()
-# e = TurtlePyEnacter()
+e = TurtlePyEnacter()
 # e = OsoyooCarEnacter(ROBOT_IP)
 
 if __name__ == '__main__':
     """ The main loop controlling the interaction of the agent with the environment """
     outcome = 0
-    for i in range(20):
+    for i in range(300):
         act = a.action(outcome)
         outcome = e.outcome(act)
