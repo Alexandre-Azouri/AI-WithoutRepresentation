@@ -23,7 +23,7 @@ class TurtlePyEnacter:
         pen.speed(0)
         pen.pencolor("white")
         pen.hideturtle()
-        pen.setpos(-SCREEN_WIDTH/2, -SCREEN_HEIGHT/2)
+        pen.setpos(-SCREEN_WIDTH / 2, -SCREEN_HEIGHT / 2)
         pen.fillcolor("white")
         pen.begin_fill()
         for i in range(2):
@@ -58,17 +58,17 @@ class TurtlePyEnacter:
 
             # Bump on screen edge and return outcome 1
             (screen_x, screen_y) = self.screen.screensize()
-            if self.turtle.xcor() < -SCREEN_WIDTH/2:
-                self.turtle.goto(-SCREEN_WIDTH/2, self.turtle.ycor())
+            if self.turtle.xcor() < -SCREEN_WIDTH / 2:
+                self.turtle.goto(-SCREEN_WIDTH / 2, self.turtle.ycor())
                 _outcome = 1
-            if self.turtle.xcor() > SCREEN_WIDTH/2:
-                self.turtle.goto(SCREEN_WIDTH/2, self.turtle.ycor())
+            if self.turtle.xcor() > SCREEN_WIDTH / 2:
+                self.turtle.goto(SCREEN_WIDTH / 2, self.turtle.ycor())
                 _outcome = 1
-            if self.turtle.ycor() < -SCREEN_HEIGHT/2:
-                self.turtle.goto(self.turtle.xcor(), -SCREEN_HEIGHT/2)
+            if self.turtle.ycor() < -SCREEN_HEIGHT / 2:
+                self.turtle.goto(self.turtle.xcor(), -SCREEN_HEIGHT / 2)
                 _outcome = 1
-            if self.turtle.ycor() > SCREEN_HEIGHT/2:
-                self.turtle.goto(self.turtle.xcor(), SCREEN_HEIGHT/2)
+            if self.turtle.ycor() > SCREEN_HEIGHT / 2:
+                self.turtle.goto(self.turtle.xcor(), SCREEN_HEIGHT / 2)
                 _outcome = 1
 
             if _outcome == 0:
@@ -82,7 +82,8 @@ class TurtlePyEnacter:
 if __name__ == '__main__':
     """ Main """
     x = TurtlePyEnacter()
-    interaction_step = 0 # Prevents triggering a new interaction before the previous is finished
+    interaction_step = 0  # Prevents triggering a new interaction before the previous is finished
+
 
     def k1():
         global interaction_step
@@ -91,6 +92,7 @@ if __name__ == '__main__':
             print(x.outcome(0))
             interaction_step = 0
 
+
     def k2():
         global interaction_step
         if interaction_step == 0:
@@ -98,12 +100,14 @@ if __name__ == '__main__':
             print(x.outcome(1))
             interaction_step = 0
 
+
     def k3():
         global interaction_step
         if interaction_step == 0:
             interaction_step = 1
             print(x.outcome(2))
             interaction_step = 0
+
 
     x.screen.onkey(k1, "Up")  # Up arrow key: go forward
     x.screen.onkey(k2, "Left")  # Left arrow key: turn left

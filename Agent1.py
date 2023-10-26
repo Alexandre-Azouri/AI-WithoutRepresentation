@@ -18,21 +18,21 @@ class Agent1:
                   ", valence: " + str(self.valence_table[self._action][outcome]) + ")")
 
         """ Computing the next action to enact """
-        # TODO: Implement the agent's decision mechanism
-        if(self._action is None):
+        # TODO: Implement the agent's decision mechanism - DONE
+        if self._action is None:
             self._action = 0
-        if(self.counter > 3):
-            self._action = (self._action +1) %2
+        if self.counter > 3:
+            self._action = (self._action + 1) % 2
             self.counter = 0
-        # TODO: Implement the agent's anticipation mechanism
+        # TODO: Implement the agent's anticipation mechanism - DONE
         self.anticipated_outcome = 0
-        if(self.obtainedOutcomes.get(self._action) is None and self.lastAction is not None):
+        if self.obtainedOutcomes.get(self._action) is None and self.lastAction is not None:
             self.obtainedOutcomes[self.lastAction] = outcome
 
-        if(self.obtainedOutcomes.get(self._action) is not None):
+        if self.obtainedOutcomes.get(self._action) is not None:
             self.anticipated_outcome = self.obtainedOutcomes[self._action]
         self.counter += 1
-        if(self._action != self.lastAction):
+        if self._action != self.lastAction:
             self.counter = 0
         self.lastAction = self._action
         return self._action
